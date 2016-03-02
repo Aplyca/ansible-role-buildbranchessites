@@ -9,10 +9,6 @@
   register: repo
   tags: git_changes
 
-- debug:
-    msg: "{{ repo }}"
-  tags: git_changes
-
 - name: "Update branches"
   include: update.yml
   with_items: "{{ repo.updated }}"
