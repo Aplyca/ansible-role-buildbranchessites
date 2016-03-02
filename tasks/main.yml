@@ -1,7 +1,4 @@
 ---
-- debug: var=buildbranches
-  tags: vars
-
 - name: "Get git repo modifications"
   git_changes:
     repo_path: "{{ buildbranches.build_dir }}/{{ buildbranches.default_branch }}"
