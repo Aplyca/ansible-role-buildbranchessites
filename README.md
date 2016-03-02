@@ -35,7 +35,7 @@ ansible-playbook -i inventories/local playbook.yml
 In order to use your own custom settings, use the "settings/custom.yml" file, you can overide any varible used in the playbooks and roles.
 
 ```bash
-ansible-playbook -i inventories/local playbook.yml
+ansible-playbook -i inventories/local playbooks.yml
 ```
 
 By default the custom.yml file is ignored in git, be mindful to not add to version control your custom files or info.
