@@ -1,7 +1,8 @@
 ---
-- set_fact: branch="{{ item }}"
+- name: Delete | set branch name
+  set_fact: branch="{{ item }}"
 
-- name: Delate site branch
+- name: Delete | Delete site branch
   file:
     path: "{{ buildbranches.build_dir }}/{{ branch }}"
     state: absent

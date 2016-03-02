@@ -15,7 +15,7 @@ Vagrant.configure(2) do |config|
           provisioner.extra_vars = "custom.yml" if File.file?("custom.yml")
           provisioner.groups = { "web" => ["buildbranches.vagrant"] }
           #provisioner.tags = "git_changes"
-          provisioner.verbose = true
+          #provisioner.verbose = true
       end
   end
 end

@@ -1,14 +1,15 @@
 ---
-- set_fact: branch="{{ item }}"
+- name: Update | set branch name
+  set_fact: branch="{{ item }}"
 
-- name: Get branch code
+- name: Update | Get branch code
   git:
     dest: "{{ buildbranches.build_dir }}/{{ branch }}"
     force: yes
     repo: "{{ buildbranches.repo }}"
     version: "{{ branch }}"
 
-- name: Run build commands
+- name: Update | Run build commands
   shell: "{{ item }}"
   args:
     chdir: "{{ buildbranches.build_dir }}/{{ branch }}"
