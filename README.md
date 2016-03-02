@@ -22,20 +22,20 @@ ansible-galaxy install -r dependencies.yml
 List tasks and hosts before provision:
 
 ```bash
-ansible-playbook -i inventories/local playbook.yml --list-tasks --list-hosts
+ansible-playbook -i inventories/local playbooks.yml --list-tasks --list-hosts
 ```
 
 Build brancehs sites:
 
 ```bash
-ansible-playbook -i inventories/local playbook.yml
+ansible-playbook -i inventories/local playbooks.yml
 ```
 
 ### Custom settings
 In order to use your own custom settings, use the "settings/custom.yml" file, you can overide any varible used in the playbooks and roles.
 
 ```bash
-ansible-playbook -i inventories/local playbook.yml
+ansible-playbook -i inventories/local playbooks.yml
 ```
 
 By default the custom.yml file is ignored in git, be mindful to not add to version control your custom files or info.
