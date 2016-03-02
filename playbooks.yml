@@ -13,7 +13,11 @@
       apache2_module:
         name: ssl
         state: present       
+    - file: path="/etc/apache2/sites-available/app-branches.conf"
+      become: yes
     - file: path="/tmp/app/master" state=directory
+    - command: "a2ensite app-branches"
+      become: yes
     - git: repo=https://github.com/Aplyca/ansible-role-buildbranchessites.git dest=/tmp/app/master update=no
   roles:
     - Aplyca.BuildBranchesSites

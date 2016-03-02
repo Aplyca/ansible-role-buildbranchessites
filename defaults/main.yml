@@ -5,7 +5,7 @@ root: "/tmp"
 buildbranches:
   app: "{{ app | lower }}"
   build_dir: "{{ root }}/{{ app | lower }}"
-  domain: exmaple.net
+  domain: example.net
   sync_exclude: []
   commands:
     - "ls -la"

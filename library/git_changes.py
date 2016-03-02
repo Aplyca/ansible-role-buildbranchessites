@@ -19,7 +19,9 @@ def main():
         if not repo_path:
             raise Exception('Repository path not provided', repo_path)
         
-        new = deleted = updated = []
+        new = []
+        deleted = []
+        updated = []
         changes = os.popen("cd "+repo_path+" && git fetch origin --no-tags --prune 2>&1 >/dev/null | grep '\s\->\sorigin\/'").read().splitlines()
         for change in changes:
             search_branch = re.search("->\sorigin\/(.*)$", change)
@@ -32,7 +34,9 @@ def main():
                 continue                
                                 
             if re.search("\[new\sbranch\]", change) is not None:
-                new.append(branch)
+                branch_diff = os.popen("cd "+repo_path+" && git diff --name-status origin/master origin/"+branch).read().splitlines()
+                if branch_diff:
+                    new.append(branch)
             elif re.search("\[deleted\]", change) is not None:   
                 deleted.append(branch)
             else:

@@ -1,9 +1,6 @@
 ---
 - set_fact: branch="{{ item }}"
 
-- debug:
-    msg: "{{ branch }}"
-
 - name: Get branch code
   git:
     dest: "{{ buildbranches.build_dir }}/{{ branch }}"
