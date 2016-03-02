@@ -22,13 +22,13 @@ ansible-galaxy install -r dependencies.yml
 List tasks and hosts before provision:
 
 ```bash
-ansible-playbook -i inventories/local playbook.yml --list-tasks --list-hosts
+ansible-playbook -i inventories/local playbooks.yml --list-tasks --list-hosts
 ```
 
 Build brancehs sites:
 
 ```bash
-ansible-playbook -i inventories/local playbook.yml
+ansible-playbook -i inventories/local playbooks.yml
 ```
 
 ### Custom settings
