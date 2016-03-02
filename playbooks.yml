@@ -14,6 +14,6 @@
         name: ssl
         state: present       
     - file: path="/tmp/app/master" state=directory
-    - git: repo=https://github.com/Aplyca/ansible-role-buildbranchessites.git dest="/tmp/app/master"
+    - git: repo=https://github.com/Aplyca/ansible-role-buildbranchessites.git dest=/tmp/app/master update=no
   roles:
     - Aplyca.BuildBranchesSites
