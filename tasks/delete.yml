@@ -1,0 +1,10 @@
+---
+- set_fact: branch="{{ item }}"
+
+- debug:
+    msg: "{{ branch }}"
+
+- name: Delate site branch
+  file:
+    path: "{{ buildbranches.build_dir }}/{{ branch }}"
+    state: absent

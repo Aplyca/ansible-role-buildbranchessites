@@ -1,0 +1,18 @@
+---
+- set_fact: branch="{{ item }}"
+
+- debug:
+    msg: "{{ branch }}"
+
+- name: Get branch code
+  git:
+    dest: "{{ buildbranches.build_dir }}/{{ branch }}"
+    force: yes
+    repo: "{{ buildbranches.repo }}"
+    version: "{{ branch }}"
+
+- name: Run build commands
+  shell: "{{ item }}"
+  args:
+    chdir: "{{ buildbranches.build_dir }}/{{ branch }}"
+  with_items: "{{ buildbranches.commands }}" 

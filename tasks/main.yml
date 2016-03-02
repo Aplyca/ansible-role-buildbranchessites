@@ -1,0 +1,64 @@
+---
+- debug: var=buildbranches
+  tags: vars
+
+- name: "Get git repo modifications"
+  git_changes:
+    repo_path: "{{ buildbranches.build_dir }}/{{ buildbranches.default_branch }}"
+    exclude_pattern: "{{ buildbranches.exclude_pattern }}"
+  register: repo
+  tags: git_changes
+
+- debug:
+    msg: "{{ repo }}"
+  tags: git_changes
+
+- name: "Update branches"
+  include: update.yml
+  with_items: "{{ repo.updated }}"
+
+- name: "Create new branches"
+  include: create.yml
+  with_items: "{{ repo.new }}"
+
+- name: "Delete branches"
+  include: delete.yml
+  with_items: "{{ repo.deleted }}"
+
+- name: Get list of branches
+  shell: "echo '{{ buildbranches.default_branch }}' && git branch -r --list --no-merged | grep -v 'HEAD' | grep -v '{{ buildbranches.exclude_pattern }}' | cut -d'/' -f2"
+  args:
+    chdir: "{{ buildbranches.build_dir }}/{{ buildbranches.default_branch }}"
+  register: branches
+  changed_when: False
+
+- name: Update VirtualHost
+  become: yes
+  template:
+    src: branches.conf.j2
+    dest: "/etc/apache2/sites-available/{{ buildbranches.app }}-branches.conf"
+  notify: reload apache
+
+- name: Send notification to Slack
+  slack:
+    token: "{{ buildbranches.slack.token }}"
+    msg: "{{ buildbranches.slack.message }}"
+    attachments:
+      - title: "Release new version"
+        text: "{{ buildbranches.slack.description }}"
+        color: good
+        fields:
+          - title: "Branch"
+            value: "{{ item }}"
+            short: "true"
+          - title: "URLs"
+            value: "http://{{ item }}.{{ buildbranches.domain }}, https://{{ item }}.{{ buildbranches.domain }}"
+            short: "true"
+          - title: "Branch diff URL"
+            value: "{{ buildbranches.diff_url }}/{{ buildbranches.default_branch }}...{{ item }}"
+            short: "true"
+    username: "{{ buildbranches.slack.username }}"
+    channel: "{{ buildbranches.slack.channel }}"
+    icon_emoji: "{{ buildbranches.slack.icon_emoji }}"
+  with_items: "{{ repo.new }}"
+  when: buildbranches.slack.token is defined

@@ -1,0 +1,22 @@
+---
+- set_fact: branch="{{ item }}"
+
+- name: Create site branch directory
+  file:
+    path: "{{ buildbranches.build_dir }}/{{ branch }}"
+    state: directory
+
+- name: Create exclude list file
+  template:
+    src: exclude_list.txt.j2
+    dest: "/tmp/{{ buildbranches.app }}-exclude_list.txt"
+
+- name: Copy site files
+  shell: "rsync -aA --exclude-from '/tmp/{{ buildbranches.app }}-exclude_list.txt' master/ {{ branch }}/"
+  args:
+    chdir: "{{ buildbranches.build_dir }}"
+
+- name: Run update tasks
+  include: update.yml
+  vars:
+    item: "{{ branch }}"

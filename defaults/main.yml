@@ -1,0 +1,24 @@
+---
+app: App
+root: "/tmp"
+
+buildbranches:
+  app: "{{ app | lower }}"
+  build_dir: "{{ root }}/{{ app | lower }}"
+  domain: exmaple.net
+  sync_exclude: []
+  commands:
+    - "ls -la"
+  repo: "https://github.com/Aplyca/ansible-role-buildbranchessites.git"
+  default_branch: master
+  exclude_pattern: "not-include-this-branch"
+  diff_url: "https://github.com/Aplyca/ansible-role-buildbranchessites/compare"
+  certificate: {}
+  documentroot: ""
+  vh_includes: []
+  slack:
+    username: "Ansible"
+    icon_emoji: slack
+    channel: general
+    message: "New branch site built"
+    description: "New branch site built"

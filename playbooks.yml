@@ -1,0 +1,19 @@
+---
+- name: Build branches sites
+  hosts: all
+  gather_facts: no
+  pre_tasks:
+    - apt:
+        name: "{{ item }}"
+      become: yes
+      with_items:
+        - git
+        - apache2
+    - become: yes
+      apache2_module:
+        name: ssl
+        state: present       
+    - file: path="/tmp/app/master" state=directory
+    - git: repo=https://github.com/Aplyca/ansible-role-buildbranchessites.git dest="/tmp/app/master"
+  roles:
+    - Aplyca.BuildBranchesSites

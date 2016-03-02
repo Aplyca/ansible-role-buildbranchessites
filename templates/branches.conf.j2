@@ -1,0 +1,43 @@
+# {{ ansible_managed }}
+
+{% for branch in branches.stdout_lines %}
+# Virtualhosts for branch {{ branch }}
+<VirtualHost *:80>
+    ServerName {{ branch }}.{{ buildbranches.domain }}
+    ServerAlias *.{{ branch }}.{{ buildbranches.domain }}
+
+    DocumentRoot {{ buildbranches.build_dir }}/{{ branch }}{{ buildbranches.documentroot }}
+
+    ErrorLog /var/log/apache2/{{ branch }}.{{ buildbranches.domain }}_error.log
+    CustomLog /var/log/apache2/{{ branch }}.{{ buildbranches.domain }}_access.log combined
+
+    {% for include in buildbranches.vh_includes %}
+    IncludeOptional "{{ buildbranches.build_dir }}/{{ branch }}/{{ include }}"
+    {% endfor %}
+</VirtualHost>
+<VirtualHost *:443>
+    ServerName {{ branch }}.{{ buildbranches.domain }}
+    ServerAlias *.{{ branch }}.{{ buildbranches.domain }}
+
+    DocumentRoot {{ buildbranches.build_dir }}/{{ branch }}{{ buildbranches.documentroot }}
+
+    SSLEngine on
+    {% if buildbranches.certificate.file is defined %}
+        SSLCertificateFile {{ buildbranches.certificate.file }}
+    {% endif %}
+    {% if buildbranches.certificate.keyfile is defined %}
+        SSLCertificateKeyFile {{ buildbranches.certificate.keyfile }}
+    {% endif %}
+    {% if buildbranches.certificate.chainfile is defined %}
+        SSLCertificateChainFile buildbranches.certificate.chainfile }}
+    {% endif %}
+
+    ErrorLog /var/log/apache2/{{ branch }}.{{ buildbranches.domain }}_error.log
+    CustomLog /var/log/apache2/{{ branch }}.{{ buildbranches.domain }}_access.log combined
+
+    {% for include in buildbranches.vh_includes %}
+    IncludeOptional "{{ buildbranches.build_dir }}/{{ branch }}/{{ include }}"
+    {% endfor %}
+</VirtualHost>
+
+{% endfor %}
