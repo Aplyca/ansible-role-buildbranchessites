@@ -61,6 +61,3 @@ tests/vagrant.sh
 ```bash
 tests/docker.sh
 ```
-
-## Version control
-* Use git to push/push all your changes.
