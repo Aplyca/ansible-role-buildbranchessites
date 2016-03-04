@@ -9,14 +9,17 @@
 - name: "Update branches"
   include: update.yml
   with_items: "{{ repo.updated }}"
+  when: repo is defined
 
 - name: "Create new branches"
   include: create.yml
   with_items: "{{ repo.new }}"
+  when: repo is defined  
 
 - name: "Delete branches"
   include: delete.yml
   with_items: "{{ repo.deleted }}"
+  when: repo is defined
 
 - name: Get list of branches
   shell: "echo '{{ buildbranches.default_branch }}' && git branch -r --list --no-merged | grep -v 'HEAD' | grep -v '{{ buildbranches.exclude_pattern }}' | cut -d'/' -f2"
