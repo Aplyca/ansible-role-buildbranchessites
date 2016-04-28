@@ -13,4 +13,6 @@
   shell: "{{ item }}"
   args:
     chdir: "{{ buildbranches.build_dir }}/{{ branch }}"
-  with_items: "{{ buildbranches.commands }}" 
+  with_items: "{{ buildbranches.commands }}"
+  async: 3600
+  poll: 0  

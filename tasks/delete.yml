@@ -6,3 +6,14 @@
   file:
     path: "{{ buildbranches.build_dir }}/{{ branch }}"
     state: absent
+  async: 3600
+  poll: 0  
+
+- name: Delete | Delete DB
+  become: yes
+  mysql_db:
+    name: "{{ buildbranches.db.name }}_{{ branch }}"
+    state: absent
+  when: buildbranches.db.name
+  async: 3600
+  poll: 0  

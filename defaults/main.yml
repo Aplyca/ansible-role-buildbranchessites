@@ -16,6 +16,9 @@ buildbranches:
   certificate: {}
   documentroot: ""
   vh_includes: []
+  db:
+    name: "{{ app | lower }}"
+    target: "/tmp/app.sql"
   slack:
     username: "Ansible"
     icon_emoji: slack

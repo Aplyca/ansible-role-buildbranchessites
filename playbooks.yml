@@ -5,17 +5,24 @@
   pre_tasks:
     - apt:
         name: "{{ item }}"
-      become: yes
+        update_cache: yes
+        cache_valid_time: 86400
       with_items:
         - git
         - apache2
-    - become: yes
-      apache2_module:
+        - mysql-server
+        - mysql-client
+        - python-mysqldb
+      become: yes
+    - apache2_module:
         name: ssl
-        state: present       
-    - file: path="/etc/apache2/sites-available/app-branches.conf"
+        state: present
       become: yes
     - file: path="/tmp/app/master" state=directory
+    - file: 
+        path: "/etc/apache2/sites-available/app-branches.conf"
+        state: touch
+      become: yes
     - command: "a2ensite app-branches"
       become: yes
     - git: repo=https://github.com/Aplyca/ansible-role-buildbranchessites.git dest=/tmp/app/master update=no

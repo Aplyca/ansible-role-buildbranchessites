@@ -1,21 +1,38 @@
 ---
 - name: Create | set branch name
-  set_fact: branch="{{ item }}"
+  set_fact:
+    branch: "{{ item }}"
+
+- debug: 
+    var: "{{ branch }}"
+    msg: "Creating new branch"
 
 - name: Create | Create site branch directory
   file:
     path: "{{ buildbranches.build_dir }}/{{ branch }}"
     state: directory
 
-- name: Create | Create exclude list file
-  template:
-    src: exclude_list.txt.j2
-    dest: "/tmp/{{ buildbranches.app }}-exclude_list.txt"
-
 - name: Create | Copy site files
-  shell: "rsync -aA --exclude-from '/tmp/{{ buildbranches.app }}-exclude_list.txt' master/ {{ branch }}/"
+  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude {{ path }} {% endfor %}master/ {{ branch }}/"
   args:
     chdir: "{{ buildbranches.build_dir }}"
+
+- name: Create | Create DB
+  become: yes
+  mysql_db:
+    name: "{{ buildbranches.db.name }}_{{ branch }}"
+    state: present
+    encoding: "utf8"
+    collation: "utf8_general_ci"
+  when: buildbranches.db.name 
+
+- name: Create | Import DB SQL file
+  become: yes
+  mysql_db:
+    name: "{{ buildbranches.db.name }}_{{ branch }}"
+    state: import
+    target: "{{ buildbranches.db.target }}"
+  when: buildbranches.db.name 
 
 - name: Create | Run update tasks
   include: update.yml

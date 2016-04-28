@@ -6,11 +6,6 @@
   register: repo
   tags: git_changes
 
-- name: "Update branches"
-  include: update.yml
-  with_items: "{{ repo.updated }}"
-  when: repo is defined
-
 - name: "Create new branches"
   include: create.yml
   with_items: "{{ repo.new }}"
@@ -19,6 +14,11 @@
 - name: "Delete branches"
   include: delete.yml
   with_items: "{{ repo.deleted }}"
+  when: repo is defined
+
+- name: "Update branches"
+  include: update.yml
+  with_items: "{{ repo.updated }}"
   when: repo is defined
 
 - name: Get list of branches
@@ -40,7 +40,7 @@
     token: "{{ buildbranches.slack.token }}"
     msg: "{{ buildbranches.slack.message }}"
     attachments:
-      - title: "Release new version"
+      - title: "New Branch site created"
         text: "{{ buildbranches.slack.description }}"
         color: good
         fields:
