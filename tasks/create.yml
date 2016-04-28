@@ -5,7 +5,6 @@
 
 - debug: 
     var: "{{ branch }}"
-    msg: "Creating new branch"
 
 - name: Create | Create site branch directory
   file:
