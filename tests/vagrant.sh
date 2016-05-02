@@ -7,7 +7,7 @@ vagrant destroy -f &&
 vagrant up &&
 
 echo "Running tests"
-ansible-playbook -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory tests/playbook.yml -u vagrant &&
+ansible-playbook -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory tests/playbooks.yml -u vagrant &&
 
 echo "Destroying machine"
 vagrant destroy -f

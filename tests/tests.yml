@@ -1,0 +1,11 @@
+---
+buildbranches:
+  databases:
+    - name: "{{ app | lower }}"
+      target: "/tmp/app.sql"
+  configs:
+      - dest: settings.yml
+        value: |
+          first:
+            second:
+                third: "value REPLACEBRANCH setting"

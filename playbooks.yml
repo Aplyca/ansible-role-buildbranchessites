@@ -19,12 +19,16 @@
         state: present
       become: yes
     - file: path="/tmp/app/master" state=directory
-    - file: 
+    - file:
         path: "/etc/apache2/sites-available/app-branches.conf"
         state: touch
       become: yes
+    - file:
+        path: "/tmp/app.sql"
+        state: touch
     - command: "a2ensite app-branches"
       become: yes
     - git: repo=https://github.com/Aplyca/ansible-role-buildbranchessites.git dest=/tmp/app/master update=no
+    - debug: var=buildbranches
   roles:
     - Aplyca.BuildBranchesSites

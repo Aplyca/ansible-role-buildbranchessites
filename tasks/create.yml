@@ -3,8 +3,8 @@
   set_fact:
     branch: "{{ item }}"
 
-- debug: 
-    var: "{{ branch }}"
+- debug:
+    msg: "Creating new branch {{ branch }}"
 
 - name: Create | Create site branch directory
   file:
@@ -19,19 +19,28 @@
 - name: Create | Create DB
   become: yes
   mysql_db:
-    name: "{{ buildbranches.db.name }}_{{ branch }}"
+    name: "{{ item.name }}_{{ branch }}"
     state: present
     encoding: "utf8"
     collation: "utf8_general_ci"
-  when: buildbranches.db.name 
+  with_items: "{{ buildbranches.databases }}"
 
 - name: Create | Import DB SQL file
   become: yes
   mysql_db:
-    name: "{{ buildbranches.db.name }}_{{ branch }}"
+    name: "{{ item.name }}_{{ branch }}"
     state: import
-    target: "{{ buildbranches.db.target }}"
-  when: buildbranches.db.name 
+    target: "{{ item.target }}"
+  with_items: "{{ buildbranches.databases }}"
+
+- name: Create | Ensure custom settings are present
+  copy:
+    content: "{{ item.value | regex_replace('REPLACEBRANCH', branch) }}"
+    dest: "{{ buildbranches.build_dir }}/{{ branch }}/{{ item.dest }}"
+    follow: yes
+  with_items: "{{ buildbranches.configs }}"
+  #no_log: True
+  tags: config
 
 - name: Create | Run update tasks
   include: update.yml

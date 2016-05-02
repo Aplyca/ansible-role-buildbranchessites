@@ -1,6 +1,10 @@
 ---
 - name: Update | set branch name
-  set_fact: branch="{{ item }}"
+  set_fact: 
+    branch: "{{ item }}"
+
+- debug: 
+    msg: "Updating branch {{ branch }}"
 
 - name: Update | Get branch code
   git:
