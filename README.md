@@ -1,5 +1,8 @@
 # Build Branches sites
 
+[![Build Status](https://travis-ci.org/Aplyca/ansible-role-buildbranchessites.svg?branch=master)](https://travis-ci.org/Aplyca/ansible-role-buildbranchessites)
+[![Circle CI](https://circleci.com/gh/Aplyca/ansible-role-buildbranchessites.png?style=badge)](https://circleci.com/gh/Aplyca/ansible-role-buildbranchessites)
+
 ## SSH
 
 * Use your SSH config file (~/.ssh/config) to confgire all the SSH connections, for example the inventory hosts connections.
