@@ -4,6 +4,6 @@ dependencies:
 
 test:
   pre:
-    - sudo ln -s ansible-role-buildbranchessites ../aplyca.BuildBranchesSites
+    - sudo ln -s ansible-role-buildbranchessites ../Aplyca.BuildBranchesSites
   override:
     - tests/tests.sh
