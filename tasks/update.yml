@@ -1,22 +1,18 @@
 ---
-- name: Update | set branch name
-  set_fact:
-    branch: "{{ branch_item }}"
-
 - debug:
-    msg: "Updating branch {{ branch }}"
+    msg: "Updating branch {{ branch_item }}"
 
 - name: Update | Get branch code
   git:
-    dest: "{{ buildbranches.build_dir }}/{{ branch }}"
+    dest: "{{ buildbranches.build_dir }}/{{ branch_item }}"
     force: yes
     repo: "{{ buildbranches.repo }}"
-    version: "{{ branch }}"
+    version: "{{ branch_item }}"
 
 - name: Update | Run build commands
   shell: "{{ item }}"
   args:
-    chdir: "{{ buildbranches.build_dir }}/{{ branch }}"
+    chdir: "{{ buildbranches.build_dir }}/{{ branch_item }}"
   with_items: "{{ buildbranches.commands }}"
   async: 3600
   poll: 0

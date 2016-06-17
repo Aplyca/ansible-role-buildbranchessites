@@ -1,25 +1,21 @@
 ---
-- name: Create | set branch name
-  set_fact:
-    branch: "{{ branch_item }}"
-
 - debug:
-    msg: "Creating new branch {{ branch }}"
+    msg: "Creating new branch {{ branch_item }}"
 
 - name: Create | Create site branch directory
   file:
-    path: "{{ buildbranches.build_dir }}/{{ branch }}"
+    path: "{{ buildbranches.build_dir }}/{{ branch_item }}"
     state: directory
 
 - name: Create | Copy site files
-  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude {{ path }} {% endfor %}master/ {{ branch }}/"
+  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude {{ path }} {% endfor %}master/ {{ branch_item }}/"
   args:
     chdir: "{{ buildbranches.build_dir }}"
 
 - name: Create | Create DB
   become: yes
   mysql_db:
-    name: "{{ item.name }}_{{ branch }}"
+    name: "{{ item.name }}_{{ branch_item }}"
     state: present
     encoding: "utf8"
     collation: "utf8_general_ci"
@@ -28,15 +24,15 @@
 - name: Create | Import DB SQL file
   become: yes
   mysql_db:
-    name: "{{ item.name }}_{{ branch }}"
+    name: "{{ item.name }}_{{ branch_item }}"
     state: import
     target: "{{ item.target }}"
   with_items: "{{ buildbranches.databases }}"
 
 - name: Create | Ensure custom settings are present
   copy:
-    content: "{{ item.value | regex_replace('REPLACEBRANCH', branch) }}"
-    dest: "{{ buildbranches.build_dir }}/{{ branch }}/{{ item.dest }}"
+    content: "{{ item.value | regex_replace('REPLACEBRANCH', branch_item) }}"
+    dest: "{{ buildbranches.build_dir }}/{{ branch_item }}/{{ item.dest }}"
     follow: yes
   with_items: "{{ buildbranches.configs }}"
   no_log: True
@@ -45,4 +41,4 @@
 - name: Create | Run update tasks
   include: update.yml
   vars:
-    item: "{{ branch }}"
+    branch_item: "{{ branch_item }}"

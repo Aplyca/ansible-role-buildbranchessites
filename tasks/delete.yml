@@ -1,14 +1,10 @@
 ---
-- name: Delete | set branch name
-  set_fact:
-    branch: "{{ branch_item }}"
-
 - debug:
-    msg: "deleting branch {{ branch }}"
+    msg: "deleting branch {{ branch_item }}"
 
 - name: Delete | Delete site branch
   file:
-    path: "{{ buildbranches.build_dir }}/{{ branch }}"
+    path: "{{ buildbranches.build_dir }}/{{ branch_item }}"
     state: absent
   async: 3600
   poll: 0
@@ -16,7 +12,7 @@
 - name: Delete | Delete DB
   become: yes
   mysql_db:
-    name: "{{ item.name }}_{{ branch }}"
+    name: "{{ item.name }}_{{ branch_item }}"
     state: absent
   with_items: "{{ buildbranches.databases }}"
   async: 3600
