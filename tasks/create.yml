@@ -1,7 +1,7 @@
 ---
 - name: Create | set branch name
   set_fact:
-    branch: "{{ item }}"
+    branch: "{{ branch_item }}"
 
 - debug:
     msg: "Creating new branch {{ branch }}"
@@ -39,7 +39,7 @@
     dest: "{{ buildbranches.build_dir }}/{{ branch }}/{{ item.dest }}"
     follow: yes
   with_items: "{{ buildbranches.configs }}"
-  #no_log: True
+  no_log: True
   tags: config
 
 - name: Create | Run update tasks

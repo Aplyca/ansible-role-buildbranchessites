@@ -1,7 +1,7 @@
 ---
 - name: Delete | set branch name
   set_fact:
-    branch: "{{ item }}"
+    branch: "{{ branch_item }}"
 
 - debug:
     msg: "deleting branch {{ branch }}"

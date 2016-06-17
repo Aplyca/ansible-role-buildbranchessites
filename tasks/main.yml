@@ -23,14 +23,20 @@
 - name: "Create new branches"
   include: create.yml
   with_items: "{{ branches.stdout_lines | difference(sites.stdout_lines) }}"
+  loop_control:
+    loop_var: branch_item
 
 - name: "Update branches"
   include: update.yml
   with_items: "{{ updatedbranches.stdout_lines }}"
+  loop_control:
+    loop_var: branch_item
 
 - name: "Delete branches"
   include: delete.yml
   with_items: "{{ sites.stdout_lines | difference(branches.stdout_lines) }}"
+  loop_control:
+    loop_var: branch_item
 
 - name: Update VirtualHost
   become: yes

@@ -1,9 +1,9 @@
 ---
 - name: Update | set branch name
-  set_fact: 
-    branch: "{{ item }}"
+  set_fact:
+    branch: "{{ branch_item }}"
 
-- debug: 
+- debug:
     msg: "Updating branch {{ branch }}"
 
 - name: Update | Get branch code
@@ -19,4 +19,4 @@
     chdir: "{{ buildbranches.build_dir }}/{{ branch }}"
   with_items: "{{ buildbranches.commands }}"
   async: 3600
-  poll: 0  
+  poll: 0
