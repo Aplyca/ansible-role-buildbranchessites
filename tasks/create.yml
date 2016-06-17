@@ -41,4 +41,4 @@
 - name: Create | Run update tasks
   include: update.yml
   vars:
-    branch_item: "{{ branch_item }}"
+    update_branch_item: "{{ branch_item }}"

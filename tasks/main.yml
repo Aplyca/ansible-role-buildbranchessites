@@ -30,7 +30,7 @@
   include: update.yml
   with_items: "{{ updatedbranches.stdout_lines }}"
   loop_control:
-    loop_var: branch_item
+    loop_var: update_branch_item
 
 - name: "Delete branches"
   include: delete.yml

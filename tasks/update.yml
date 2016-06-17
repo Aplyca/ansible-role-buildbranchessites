@@ -1,18 +1,18 @@
 ---
 - debug:
-    msg: "Updating branch {{ branch_item }}"
+    msg: "Updating branch {{ update_branch_item }}"
 
 - name: Update | Get branch code
   git:
-    dest: "{{ buildbranches.build_dir }}/{{ branch_item }}"
+    dest: "{{ buildbranches.build_dir }}/{{ update_branch_item }}"
     force: yes
     repo: "{{ buildbranches.repo }}"
-    version: "{{ branch_item }}"
+    version: "{{ update_branch_item }}"
 
 - name: Update | Run build commands
   shell: "{{ item }}"
   args:
-    chdir: "{{ buildbranches.build_dir }}/{{ branch_item }}"
+    chdir: "{{ buildbranches.build_dir }}/{{ update_branch_item }}"
   with_items: "{{ buildbranches.commands }}"
   async: 3600
   poll: 0
