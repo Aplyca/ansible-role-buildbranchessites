@@ -1,5 +1,5 @@
 #!/bin/bash
-# test MatiaDB provisiones with ansible
+# test BuildBranchesSites provisiones with ansible
 
 ANSIBLE_ROLE="Aplyca.BuildBranchesSites"
 DOCKER_IMAGE="ansible/ubuntu14.04-ansible"

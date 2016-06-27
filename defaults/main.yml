@@ -6,6 +6,7 @@ buildbranches:
   app: "{{ app | lower }}"
   build_dir: "{{ root }}/{{ app | lower }}"
   domain: example.net
+  listen: "*:80"
   sync_exclude: []
   commands:
     - "ls -la"

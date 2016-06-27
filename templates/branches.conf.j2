@@ -2,7 +2,7 @@
 
 {% for branch in branches.stdout_lines %}
 # Virtualhosts for branch {{ branch }}
-<VirtualHost *:80>
+<VirtualHost {{ buildbranches.listen | default('*:80') }}>
     ServerName {{ branch }}.{{ buildbranches.domain }}
     ServerAlias *.{{ branch }}.{{ buildbranches.domain }}
 
