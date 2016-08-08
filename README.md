@@ -13,14 +13,7 @@
 * Read how to use the **Ansible** provisioner in README.md of each role.
 * To know more about Ansible: http://www.ansible.com
 
-### Dependencies
-Install the rol dependencies using Ansible Galaxy
-
-```bash
-ansible-galaxy install -r dependencies.yml
-```
-
-## Syncing content
+## Build branches
 
 List tasks and hosts before provision:
 

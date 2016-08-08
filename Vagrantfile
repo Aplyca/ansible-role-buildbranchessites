@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
       # Asinging a provisioner
       config_machine.vm.provision :ansible, run: "always" do |provisioner|
           provisioner.playbook = "playbooks.yml"
-          provisioner.extra_vars = "tests/tests.yml" if File.file?("tests/tests.yml")
+          provisioner.extra_vars = "tests/test.yml" if File.file?("tests/test.yml")
           provisioner.groups = { "web" => ["buildbranches.vagrant"] }
           #provisioner.tags = "git_changes"
           #provisioner.verbose = true

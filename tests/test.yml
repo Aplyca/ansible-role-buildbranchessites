@@ -9,3 +9,5 @@ buildbranches:
           first:
             second:
                 third: "value REPLACEBRANCH setting"
+  post_tasks:
+      - "service apache2 restart"                

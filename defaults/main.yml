@@ -19,6 +19,7 @@ buildbranches:
   vh_includes: []
   databases: []
   configs: []
+  post_tasks: []
   slack:
     username: "Ansible"
     icon_emoji: slack

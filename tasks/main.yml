@@ -45,6 +45,11 @@
     dest: "/etc/apache2/sites-available/{{ buildbranches.app }}-branches.conf"
   notify: reload apache
 
+- name: Post tasks
+  become: yes
+  shell: "{{ item }}"
+  with_items: "{{ buildbranches.post_tasks | default([]) }}"
+
 - name: Send notification to Slack
   slack:
     token: "{{ buildbranches.slack.token }}"
