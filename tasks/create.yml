@@ -35,7 +35,6 @@
     dest: "{{ buildbranches.build_dir }}/{{ branch_item }}/{{ item.dest }}"
     follow: yes
   with_items: "{{ buildbranches.configs }}"
-  no_log: True
   tags: config
 
 - name: Create | Run update tasks
