@@ -8,7 +8,7 @@
     state: directory
 
 - name: Create | Copy site files
-  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude {{ path }} {% endfor %}master/ {{ branch_item }}/"
+  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude '{{ path }}' {% endfor %}master/ {{ branch_item }}/"
   args:
     chdir: "{{ buildbranches.build_dir }}"
 
