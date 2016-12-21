@@ -49,27 +49,3 @@
   become: yes
   shell: "{{ item }}"
   with_items: "{{ buildbranches.post_tasks | default([]) }}"
-
-- name: Send notification to Slack
-  slack:
-    token: "{{ buildbranches.slack.token }}"
-    msg: "{{ buildbranches.slack.message }}"
-    attachments:
-      - title: "New Branch site created"
-        text: "{{ buildbranches.slack.description }}"
-        color: good
-        fields:
-          - title: "Branch"
-            value: "{{ item }}"
-            short: "true"
-          - title: "URLs"
-            value: "http://{{ item }}.{{ buildbranches.domain }}, https://{{ item }}.{{ buildbranches.domain }}"
-            short: "true"
-          - title: "Branch diff URL"
-            value: "{{ buildbranches.diff_url }}/{{ buildbranches.default_branch }}...{{ item }}"
-            short: "true"
-    username: "{{ buildbranches.slack.username }}"
-    channel: "{{ buildbranches.slack.channel }}"
-    icon_emoji: "{{ buildbranches.slack.icon_emoji }}"
-  with_items: "{{ branches.stdout_lines | difference(sites.stdout_lines) }}"
-  when: buildbranches.slack.token is defined

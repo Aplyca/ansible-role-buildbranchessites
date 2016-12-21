@@ -19,7 +19,7 @@
     target: "{{ item.target }}"
   with_items: "{{ buildbranches.databases }}"
   async: 3600
-  poll: 0  
+  poll: 0
 
 - name: Create | Create site branch directory
   file:
@@ -43,3 +43,36 @@
   include: update.yml
   vars:
     update_branch_item: "{{ branch_item }}"
+
+- name: Get Changelog
+  shell: "git log master..origin/{{ branch_item }} --pretty=format:\"%h %an, %ar: %s\" --no-merges"
+  args:
+    chdir: "{{ buildbranches.build_dir }}/{{ branch_item }}"
+  register: changelog
+  ignore_errors: yes
+
+- name: Send notification to Slack
+  slack:
+    token: "{{ buildbranches.slack.token }}"
+    msg: "{{ buildbranches.slack.message }}"
+    attachments:
+      - title: "New Branch site created"
+        text: "{{ buildbranches.slack.description }}"
+        color: good
+        fields:
+          - title: "Branch"
+            value: "{{ branch_item }}"
+            short: "true"
+          - title: "URLs"
+            value: "http://{{ branch_item }}.{{ buildbranches.domain }}, https://{{ branch_item }}.{{ buildbranches.domain }}"
+            short: "true"
+          - title: "Branch diff URL"
+            value: "{{ buildbranches.diff_url }}/{{ buildbranches.default_branch }}...{{ branch_item }}"
+            short: "true"
+          - title: "Changelog:"
+            value: "{{ changelog.stdout }}"
+            short: false
+    username: "{{ buildbranches.slack.username }}"
+    channel: "{{ buildbranches.slack.channel }}"
+    icon_emoji: "{{ buildbranches.slack.icon_emoji }}"
+  when: buildbranches.slack.token is defined
