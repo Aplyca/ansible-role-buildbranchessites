@@ -2,16 +2,6 @@
 - debug:
     msg: "Creating new branch {{ branch_item }}"
 
-- name: Create | Create site branch directory
-  file:
-    path: "{{ buildbranches.build_dir }}/{{ branch_item }}"
-    state: directory
-
-- name: Create | Copy site files
-  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude '{{ path }}' {% endfor %}master/ {{ branch_item }}/"
-  args:
-    chdir: "{{ buildbranches.build_dir }}"
-
 - name: Create | Create DB
   become: yes
   mysql_db:
@@ -28,6 +18,18 @@
     state: import
     target: "{{ item.target }}"
   with_items: "{{ buildbranches.databases }}"
+  async: 3600
+  poll: 0  
+
+- name: Create | Create site branch directory
+  file:
+    path: "{{ buildbranches.build_dir }}/{{ branch_item }}"
+    state: directory
+
+- name: Create | Copy site files
+  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude '{{ path }}' {% endfor %}master/ {{ branch_item }}/"
+  args:
+    chdir: "{{ buildbranches.build_dir }}"
 
 - name: Create | Ensure custom settings are present
   copy:
