@@ -1,4 +1,7 @@
 ---
+- debug: var=buildbranches verbosity=1
+  tags: vars
+
 - name: "Get updated branches"
   shell: 'git fetch origin --no-tags --prune 2>&1 >/dev/null | grep "\s\->\sorigin\/" | grep "\.\." | grep -v "{{ buildbranches.exclude_pattern }}" | cut -d"/" -f2'
   args:
