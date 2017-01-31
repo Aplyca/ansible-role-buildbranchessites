@@ -5,6 +5,7 @@ buildbranches:
   domain: example.net
   listen: "*:80"
   sync_exclude: []
+  env_vars: {}
   commands:
     - "ls -la"
   repo: "https://github.com/Aplyca/ansible-role-buildbranchessites.git"
