@@ -11,9 +11,7 @@
 
 - name: Update | Run build commands
   shell: "{{ item }}"
-  environment: "{{ buildbranches.env_vars | default({}) }}"  
+  environment: "{{ buildbranches.env_vars | default({}) }}"
   args:
     chdir: "{{ buildbranches.build_dir }}/{{ update_branch_item }}"
   with_items: "{{ buildbranches.commands }}"
-  async: 3600
-  poll: 0
