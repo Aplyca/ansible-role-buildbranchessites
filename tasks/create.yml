@@ -41,7 +41,7 @@
 
 - name: Replace settings
   replace:
-    path: "{{ item.file }}"
+    path: "{{ buildbranches.build_dir }}/{{ branch_item }}/{{ item.file }}"
     regexp: "{{ item.regex }}"
     replace: branch_item
   with_items: "{{ buildbranches.replace | default([]) }}"
