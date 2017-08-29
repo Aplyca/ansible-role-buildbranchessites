@@ -39,6 +39,14 @@
   with_items: "{{ buildbranches.configs }}"
   tags: config
 
+- name: Replace settings
+  replace:
+    path: "{{ buildbranches.build_dir }}/{{ branch_item }}/{{ item.file }}"
+    regexp: '{{ item.regex }}'
+    replace: '\1{{ branch_item }}\2'
+  with_items: "{{ buildbranches.replace | default([]) }}"
+  tags: config
+  
 - name: Create | Run update tasks
   include: update.yml
   vars:
