@@ -1,6 +1,6 @@
 ---
-- name: reload apache
+- name: reload server
   become: yes
   service:
-    name: apache2
+    name: "{{ buildbranches.local.server }}"
     state: reloaded

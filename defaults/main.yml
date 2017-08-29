@@ -18,9 +18,14 @@ buildbranches:
   databases: []
   configs: []
   post_tasks: []
+  strategy: local
   slack:
     username: "Ansible"
     icon_emoji: slack
     channel: general
     message: "New branch site built"
     description: "New branch site built"
+  s3:
+    bucket:
+  local:
+    server: apache2      

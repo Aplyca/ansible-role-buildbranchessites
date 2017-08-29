@@ -7,21 +7,30 @@
   args:
     chdir: "{{ buildbranches.build_dir }}/{{ buildbranches.default_branch }}"
   register: updatedbranches
-  changed_when: False
 
 - name: Get list of branches
   shell: "echo '{{ buildbranches.default_branch }}' && git branch -r --list --no-merged | grep -v 'HEAD' | grep -v '{{ buildbranches.exclude_pattern }}' | cut -d'/' -f2"
   args:
     chdir: "{{ buildbranches.build_dir }}/{{ buildbranches.default_branch }}"
   register: branches
-  changed_when: False
 
-- name: Get list of sites installed
+- name: Get list of sites installed locally
   shell: "find . -maxdepth 1 -mindepth 1 -printf '%f\n'"
   args:
     chdir: "{{ buildbranches.build_dir }}"
   register: sites
-  changed_when: False
+  when: buildbranches.strategy == "local"
+
+- name: Get list of directories installed on S3
+  s3:
+    bucket: "{{ buildbranches.s3.bucket }}"
+    mode: list
+    prefix: "{{ buildbranches.app  | lower() | trim () | replace(' ', '-') }}"
+  register: sites
+  when: buildbranches.strategy == "s3"
+
+- debug: var=sites verbosity=1
+  tags: vars
 
 - name: "Create new branches"
   include: create.yml
@@ -46,7 +55,8 @@
   template:
     src: branches.conf.j2
     dest: "/etc/apache2/sites-available/{{ buildbranches.app }}-branches.conf"
-  notify: reload apache
+  notify: reload server
+  when: buildbranches.strategy == local
 
 - name: Post tasks
   become: yes
