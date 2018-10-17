@@ -43,7 +43,7 @@
   replace:
     path: "{{ buildbranches.build_dir }}/{{ branch_item }}/{{ item.file }}"
     regexp: '{{ item.regex }}'
-    replace: '\1{{ branch_item }}\2'
+    replace: '\g<1>{{ branch_item }}\2'
   with_items: "{{ buildbranches.replace | default([]) }}"
   tags: config
   
