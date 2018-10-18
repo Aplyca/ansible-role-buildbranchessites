@@ -1,10 +1,13 @@
----
+- name: Setting sitename
+  set_fact:
+    sitename: "{{ update_branch_item | truncate(buildbranches.truncate_branch, True, '') }}"
+
 - debug:
-    msg: "Updating branch {{ update_branch_item }}"
+    msg: "Updating branch {{ sitename }}"
 
 - name: Update | Get branch code
   git:
-    dest: "{{ buildbranches.build_dir }}/{{ update_branch_item }}"
+    dest: "{{ buildbranches.build_dir }}/{{ sitename }}"
     force: yes
     repo: "{{ buildbranches.repo }}"
     version: "{{ update_branch_item }}"
@@ -13,5 +16,5 @@
   shell: "{{ item }}"
   environment: "{{ buildbranches.env_vars | default({}) }}"
   args:
-    chdir: "{{ buildbranches.build_dir }}/{{ update_branch_item }}"
+    chdir: "{{ buildbranches.build_dir }}/{{ sitename }}"
   with_items: "{{ buildbranches.commands }}"

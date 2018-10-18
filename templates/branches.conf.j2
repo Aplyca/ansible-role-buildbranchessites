@@ -2,24 +2,25 @@
 
 {% for branch in branches.stdout_lines %}
 # Virtualhosts for branch {{ branch }}
+{% set sitename = branch | truncate(buildbranches.truncate_branch, True, '') %}
 <VirtualHost {{ buildbranches.listen | default('*:80') }}>
-    ServerName {{ branch }}.{{ buildbranches.domain }}
-    ServerAlias *.{{ branch }}.{{ buildbranches.domain }}
+    ServerName {{ sitename }}.{{ buildbranches.domain }}
+    ServerAlias *.{{ sitename }}.{{ buildbranches.domain }}
 
-    DocumentRoot {{ buildbranches.build_dir }}/{{ branch }}{{ buildbranches.documentroot }}
+    DocumentRoot {{ buildbranches.build_dir }}/{{ sitename }}{{ buildbranches.documentroot }}
 
-    ErrorLog /var/log/apache2/{{ branch }}.{{ buildbranches.domain }}_error.log
-    CustomLog /var/log/apache2/{{ branch }}.{{ buildbranches.domain }}_access.log combined
+    ErrorLog /var/log/apache2/{{ sitename }}.{{ buildbranches.domain }}_error.log
+    CustomLog /var/log/apache2/{{ sitename }}.{{ buildbranches.domain }}_access.log combined
 
     {% for include in buildbranches.vh_includes %}
-    IncludeOptional "{{ buildbranches.build_dir }}/{{ branch }}/{{ include }}"
+    IncludeOptional "{{ buildbranches.build_dir }}/{{ sitename }}/{{ include }}"
     {% endfor %}
 </VirtualHost>
 <VirtualHost *:443>
-    ServerName {{ branch }}.{{ buildbranches.domain }}
-    ServerAlias *.{{ branch }}.{{ buildbranches.domain }}
+    ServerName {{ sitename }}.{{ buildbranches.domain }}
+    ServerAlias *.{{ sitename }}.{{ buildbranches.domain }}
 
-    DocumentRoot {{ buildbranches.build_dir }}/{{ branch }}{{ buildbranches.documentroot }}
+    DocumentRoot {{ buildbranches.build_dir }}/{{ sitename }}{{ buildbranches.documentroot }}
 
     SSLEngine on
     {% if buildbranches.certificate.file is defined %}
@@ -32,11 +33,11 @@
         SSLCertificateChainFile buildbranches.certificate.chainfile }}
     {% endif %}
 
-    ErrorLog /var/log/apache2/{{ branch }}.{{ buildbranches.domain }}_error.log
-    CustomLog /var/log/apache2/{{ branch }}.{{ buildbranches.domain }}_access.log combined
+    ErrorLog /var/log/apache2/{{ sitename }}.{{ buildbranches.domain }}_error.log
+    CustomLog /var/log/apache2/{{ sitename }}.{{ buildbranches.domain }}_access.log combined
 
     {% for include in buildbranches.vh_includes %}
-    IncludeOptional "{{ buildbranches.build_dir }}/{{ branch }}/{{ include }}"
+    IncludeOptional "{{ buildbranches.build_dir }}/{{ sitename }}/{{ include }}"
     {% endfor %}
 </VirtualHost>
 

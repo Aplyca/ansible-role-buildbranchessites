@@ -1,4 +1,3 @@
----
 - debug: var=buildbranches verbosity=1
   tags: vars
 
@@ -19,33 +18,27 @@
   args:
     chdir: "{{ buildbranches.build_dir }}"
   register: sites
-  when: buildbranches.strategy == "local"
-
-- name: Get list of directories installed on S3
-  s3:
-    bucket: "{{ buildbranches.s3.bucket }}"
-    mode: list
-    prefix: "{{ buildbranches.app  | lower() | trim () | replace(' ', '-') }}"
-  register: sites
-  when: buildbranches.strategy == "s3"
 
 - debug: var=sites verbosity=1
   tags: vars
 
+- debug: var=branches verbosity=1
+  tags: vars
+
 - name: "Create new branches"
-  include: create.yml
+  include_tasks: create.yml
   with_items: "{{ branches.stdout_lines | difference(sites.stdout_lines) | default([]) }}"
   loop_control:
     loop_var: branch_item
 
 - name: "Update branches"
-  include: update.yml
+  include_tasks: update.yml
   with_items: "{{ updatedbranches.stdout_lines | default([]) }}"
   loop_control:
     loop_var: update_branch_item
 
 - name: "Delete branches"
-  include: delete.yml
+  include_tasks: delete.yml
   with_items: "{{ sites.stdout_lines | difference(branches.stdout_lines) | default([]) }}"
   loop_control:
     loop_var: branch_item
@@ -56,7 +49,6 @@
     src: branches.conf.j2
     dest: "/etc/apache2/sites-available/{{ buildbranches.app }}-branches.conf"
   notify: reload server
-  when: buildbranches.strategy == local
 
 - name: Post tasks
   become: yes

@@ -1,11 +1,11 @@
----
 buildbranches:
   app: "app"
-  build_dir: "/tmp/app"
+  build_dir: "~"
   domain: example.net
   listen: "*:80"
   sync_exclude: []
   env_vars: {}
+  truncate_branch: 50
   commands:
     - "ls -la"
   repo: "https://github.com/Aplyca/ansible-role-buildbranchessites.git"
@@ -19,14 +19,11 @@ buildbranches:
   configs: []
   replace: []
   post_tasks: []
-  strategy: local
   slack:
     username: "Ansible"
     icon_emoji: slack
     channel: general
     message: "New branch site built"
     description: "New branch site built"
-  s3:
-    bucket:
   local:
-    server: apache2      
+    server: apache2

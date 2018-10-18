@@ -1,18 +1,17 @@
----
 galaxy_info:
   author: Aplyca
   description: Build sites from git branches
   company: "Aplyca SAS"
-  license: "license (BSD, MIT)"
+  license: MIT
   min_ansible_version: 2.0
   platforms:
-  - name: Debian
-    versions:
-    - all
-  - name: Ubuntu
-    versions:
-    - all
-  categories:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+  galaxy_tags:
     - cloud
     - system
 

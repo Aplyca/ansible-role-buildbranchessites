@@ -1,11 +1,14 @@
----
+- name: Setting sitename
+  set_fact:
+    sitename: "{{ branch_item | truncate(buildbranches.truncate_branch, True, '') }}"
+
 - debug:
-    msg: "Creating new branch {{ branch_item }}"
+    msg: "Creating new branch {{ sitename }}"
 
 - name: Create | Create DB
   become: yes
   mysql_db:
-    name: "{{ item.name }}_{{ branch_item }}"
+    name: "{{ item.name }}_{{ sitename }}"
     state: present
     encoding: "utf8"
     collation: "utf8_general_ci"
@@ -14,7 +17,7 @@
 - name: Create | Import DB SQL file
   become: yes
   mysql_db:
-    name: "{{ item.name }}_{{ branch_item }}"
+    name: "{{ item.name }}_{{ sitename }}"
     state: import
     target: "{{ item.target }}"
   with_items: "{{ buildbranches.databases }}"
@@ -23,39 +26,39 @@
 
 - name: Create | Create site branch directory
   file:
-    path: "{{ buildbranches.build_dir }}/{{ branch_item }}"
+    path: "{{ buildbranches.build_dir }}/{{ sitename }}"
     state: directory
 
 - name: Create | Copy site files
-  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude '{{ path }}' {% endfor %}master/ {{ branch_item }}/"
+  shell: "rsync -aAX --inplace {% for path in buildbranches.sync_exclude %}--exclude '{{ path }}' {% endfor %}master/ {{ sitename }}/"
   args:
     chdir: "{{ buildbranches.build_dir }}"
 
 - name: Create | Ensure custom settings are present
   copy:
-    content: "{{ item.value | regex_replace('REPLACEBRANCH', branch_item) }}"
-    dest: "{{ buildbranches.build_dir }}/{{ branch_item }}/{{ item.dest }}"
+    content: "{{ item.value | regex_replace('REPLACEBRANCH', sitename) }}"
+    dest: "{{ buildbranches.build_dir }}/{{ sitename }}/{{ item.dest }}"
     follow: yes
   with_items: "{{ buildbranches.configs }}"
   tags: config
 
 - name: Replace settings
   replace:
-    path: "{{ buildbranches.build_dir }}/{{ branch_item }}/{{ item.file }}"
-    regexp: '{{ item.regex }}'
-    replace: '\g<1>{{ branch_item }}\2'
+    path: "{{ buildbranches.build_dir }}/{{ sitename }}/{{ item.file }}"
+    regexp: "{{ item.regex }}"
+    replace: '\g<1>{{ sitename }}\2'
   with_items: "{{ buildbranches.replace | default([]) }}"
   tags: config
-  
+
 - name: Create | Run update tasks
-  include: update.yml
+  include_tasks: update.yml
   vars:
     update_branch_item: "{{ branch_item }}"
 
 - name: Get Changelog
-  shell: "git log master..origin/{{ branch_item }} --pretty=format:\"%h %an, %ar: %s\" --no-merges"
+  shell: "git log master..origin/{{ branch_item }} --pretty=format:'%h %an, %ar: %s' --no-merges"
   args:
-    chdir: "{{ buildbranches.build_dir }}/{{ branch_item }}"
+    chdir: "{{ buildbranches.build_dir }}/{{ sitename }}"
   register: changelog
   ignore_errors: yes
 
@@ -72,7 +75,7 @@
             value: "{{ branch_item }}"
             short: "true"
           - title: "URLs"
-            value: "http://{{ branch_item }}.{{ buildbranches.domain }}, https://{{ branch_item }}.{{ buildbranches.domain }}"
+            value: "http://{{ sitename }}.{{ buildbranches.domain }}, https://{{ sitename }}.{{ buildbranches.domain }}"
             short: "true"
           - title: "Branch diff URL"
             value: "{{ buildbranches.diff_url }}/{{ buildbranches.default_branch }}...{{ branch_item }}"
